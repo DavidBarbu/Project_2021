@@ -1,28 +1,20 @@
 const express = require("express");
-const handleCatFactsRequest = require("./catFacts");
-const {handleGreeting, otherValue} = require('./greeting');
+const bodyParser = require("body-parser");
+
+const handleGreeting = require('./controlers/greeting');
+const {port}=require('./config/express');
+const authorizationMiddleware=require('./middlewares/authorization');
+const loginHandler = require("./controlers/login");
 
 const app = express();
-const port = 3000;
+app.use(bodyParser.json());
 
-app.use((req, res, next)=>{
-    console.log('Time:', Date.now());
-    //next()
+app.post("/login", loginHandler);
+
+//app.get("/hello", authorizationMiddleware, handleGreeting);
+
+app.get("/hello/:name?", authorizationMiddleware, handleGreeting);
+
+app.listen(port, () => {
+    console.log("A pornit serveru' la ", port);
 });
-
-app.get("/", (request,response)=>{
-    response.send("Hello World!!!!");
-})
-
-app.get("/hello/:name?", (request,response)=>{
-    handleGreeting(request, response);
-    console.log(otherValue);
-})
-
-app.get('/cat/facts',handleCatFactsRequest);
-
-
-
-app.listen(port, ()=>{
-    console.log("A pornit serveru' la ",port);
-})
