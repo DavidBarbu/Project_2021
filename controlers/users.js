@@ -13,8 +13,22 @@ module.exports.getAllUsers = async (req, res) => {
     };
 }
 
-module.exports.getUserById = (req, res) => {
-
+module.exports.getUserById = async (req, res) => {
+    const {
+        id,
+    } = req.body
+    try {
+        const userById = await db.User.findAll({
+            id,
+        });
+        //console.log("userById:" , userById)
+        res.status(201).send(userById);
+    } catch (error) {
+        console.error("err:",error);
+        res.send({
+            error: "smth went wrong",
+        });
+    }
 }
 
 module.exports.createUser = async (req, res) => {
