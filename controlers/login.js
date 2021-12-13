@@ -1,22 +1,22 @@
 const jwt = require('jsonwebtoken');
 const findUser = require('../helpers/findUser')
 const { MY_SECRET_KEY } = require('../config/jwt')
+const db = require('../models');
 
+const loginHandler = async (email, password) => {
+    const user = await db.User.findOne({
+        where: {
+            email,
+            password,
+        }
+    });
 
-const loginHandler = (req, res) => {
-    const body = req.body;
-    const username = body.username;
-    const password = body.password;
-
-    if (findUser(username, password)) {
-        const token = jwt.sign({}, MY_SECRET_KEY);
-        res.send({
-            token,
-        });
+    if (user) {
+        return jwt.sign({
+            id: user.id,
+        }, MY_SECRET_KEY);
     } else {
-        res.status(401).send({
-            token: null,
-        });
+        return null;
     }
 }
 
