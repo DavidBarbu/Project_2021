@@ -7,6 +7,10 @@ const authorizationMiddleware = require('./middlewares/authorization');
 const loginHandler = require("./controlers/login");
 const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require("./controlers/users");
 const { getAllPosts, getPostById, createPost, updatePost, deletePost, addTagToPost} = require("./controlers/posts");
+
+const { graphqlHTTP} = require('express-graphql');
+const schema = require('./graphql');
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -31,6 +35,10 @@ app.post("/posts/:postId/tags/:tagId", addTagToPost);
 
 app.put("/posts/:id", updatePost);
 app.delete("/posts/:id", deletePost);
+
+app.use('/graphql', graphqlHTTP({
+    schema,
+}));
 
 app.listen(port, () => {
     console.log("A pornit serveru' la ", port);
